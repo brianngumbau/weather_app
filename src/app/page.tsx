@@ -4,10 +4,20 @@ import { useState, useEffect } from "react";
 
 export default function Home() {
   const [city, setCity] = useState("Nairobi");
-  const [unit, setUnit] = useState("metric"); // 'metric' for °C, 'imperial' for °F
+  const [unit, setUnit] = useState("metric");
   const [weather, setWeather] = useState<any>(null);
+  const [forecast, setForecast] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const formatDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString("en-UK", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
 
   const fetchWeather = async () => {
     setLoading(true);
@@ -19,22 +29,28 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch weather");
       setWeather(data);
+      await fetchForecast(); // Get forecast too
     } catch (err: any) {
       setWeather(null);
+      setForecast([]);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const formatDate = () => {
-    const today = new Date();
-    const dateStr = today.toLocaleDateString("en-UK", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-    return `${dateStr}`;
+  const fetchForecast = async () => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/forecast?city=${city}&unit=${unit}`
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to fetch forecast");
+      setForecast(data);
+    } catch (err: any) {
+      console.error("Forecast fetch error:", err.message);
+      setForecast([]);
+    }
   };
 
   const toggleUnit = (selectedUnit: string) => {
@@ -48,7 +64,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-base-200 p-4 flex justify-center items-center">
       <div className="w-full max-w-5xl">
-        {/* Search & Unit Switch */}
+        {/* Search Bar and Unit Toggle */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <input
             type="text"
@@ -81,7 +97,7 @@ export default function Home() {
 
         {weather && (
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Left Column: Current Weather */}
+            {/* Column 1: Current Weather */}
             <div className="flex flex-col items-center justify-center">
               <img
                 src={`https://openweathermap.org/img/wn/${weather.icon}@4x.png`}
@@ -91,20 +107,31 @@ export default function Home() {
               <h2 className="text-4xl font-bold">
                 {weather.temperature}°{unit === "metric" ? "C" : "F"}
               </h2>
-              <p className="text-xl">{weather.description}</p>
+              <p className="text-xl capitalize">{weather.description}</p>
               <div className="text-sm text-gray-500 mt-2 text-center">
                 {formatDate()} <br /> {weather.city}
               </div>
             </div>
 
-            {/* Center Column: Forecast (H - placeholder) */}
+            {/* Column 2: 3-Day Forecast */}
             <div className="md:col-span-1 grid grid-cols-3 gap-4 text-center">
-              <div className="card bg-base-100 shadow-md p-4">Forecast Day 1</div>
-              <div className="card bg-base-100 shadow-md p-4">Forecast Day 2</div>
-              <div className="card bg-base-100 shadow-md p-4">Forecast Day 3</div>
+              {forecast.map((day, idx) => (
+                <div key={idx} className="card bg-base-100 shadow-md p-4">
+                  <p className="font-semibold text-sm">{day.date}</p>
+                  <img
+                    src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
+                    alt="Forecast icon"
+                    className="mx-auto"
+                  />
+                  <p className="text-xs capitalize">{day.description}</p>
+                  <p className="text-sm">
+                    {day.temp_min.toFixed(1)}° / {day.temp_max.toFixed(1)}°
+                  </p>
+                </div>
+              ))}
             </div>
 
-            {/* Right Column: Wind + Humidity */}
+            {/* Column 3: Wind + Humidity */}
             <div className="grid gap-4">
               <div className="card bg-base-100 shadow-md p-4">
                 <h3 className="text-lg font-semibold">Wind Status</h3>
