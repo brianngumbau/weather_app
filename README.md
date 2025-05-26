@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌤️ Weather App Frontend (Next.js + RippleUI)
 
-## Getting Started
+This is the frontend for the decoupled Weather App built using **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **RippleUI**. It connects to a Laravel backend to fetch and display real-time weather and a 3-day forecast.
 
-First, run the development server:
+---
+
+## 📦 Tech Stack
+
+* **Framework:** Next.js 15 (with App Router)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS + RippleUI
+* **API Source:** Laravel REST backend
+
+---
+
+## 🧠 Features
+
+* 🔍 Search any city
+* 🌡️ Toggle °C / °F
+* ☁️ Current weather icon, temp, description
+* 📆 Date + City name
+* 📊 3-day forecast cards
+* 💨 Wind status
+* 💧 Humidity progress bar
+* 🔁 Real-time API data from Laravel
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone this repository
+
+```bash
+git clone https://github.com/brianngumbau/weather_app
+cd weather_app
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Runs at: `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔗 API Dependency
 
-## Learn More
+Make sure the Laravel backend is running at `http://127.0.0.1:8000`:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+php artisan serve
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Update URLs in `page.tsx` if using different host/port.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧪 UI Preview
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/app/page.tsx
+├── Search input + button
+├── °C/°F toggle
+├── Current weather icon + description
+├── 3 forecast cards
+├── Wind + Humidity sections
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📄 License
+
+MIT – free to use, share and remix.
